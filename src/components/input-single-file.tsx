@@ -42,6 +42,7 @@ interface InputSingleFileProps
   form: any;
   allowedExtensions: string[];
   maxFileSizeInMB: number;
+  replaceBy: React.ReactNode;
   error?: React.ReactNode;
 }
 
@@ -51,6 +52,7 @@ export function InputSingleFile({
   form,
   allowedExtensions,
   maxFileSizeInMB,
+  replaceBy,
   ...props
 }: InputSingleFileProps) {
   const formValues = useWatch({ control: form.control });
@@ -75,8 +77,8 @@ export function InputSingleFile({
     return fileSize <= maxFileSizeInMB * 1024 * 1024;
   }
 
-  function isValidFile(){
-    return isValidExtension() && isValidSize()
+  function isValidFile() {
+    return isValidExtension() && isValidSize();
   }
 
   return (
@@ -108,16 +110,16 @@ export function InputSingleFile({
             </div>
           </div>
           <div className="flex flex-col gap-1 mt-1">
-            {formFile && !isValidExtension() &&
+            {formFile && !isValidExtension() && (
               <Text variant="label-small" className="text-accent-red">
                 Tipo de arquivo inválido
               </Text>
-            }
-            {formFile && !isValidSize() &&
+            )}
+            {formFile && !isValidSize() && (
               <Text variant="label-small" className="text-accent-red">
                 O tamanho do arquivo excede o limite
               </Text>
-            }
+            )}
             {error && (
               <Text variant="label-small" className="text-accent-red">
                 Erro no campo
@@ -125,14 +127,18 @@ export function InputSingleFile({
             )}
           </div>
         </>
-          ) : (
+      ) : (
+        <>
+          {replaceBy}
           <div
-            className={`
-              flex gap-3 items-center 
-              border border-solid border-border-primary 
-              mt-5 p-3 rounded
-              `}
-              >
+            className={
+              `
+                flex gap-3 items-center 
+                border border-solid border-border-primary 
+                mt-5 p-3 rounded
+              `
+            }
+          >
             <Icon svg={FileImageIcon} className="fill-white w-6 h-6" />
             <div className="flex flex-col">
               <div className="truncate max-w-80">
@@ -150,13 +156,14 @@ export function InputSingleFile({
                   onClick={() => {
                     form.setValue(name, undefined);
                   }}
-                  >
+                >
                   Remover
                 </button>
               </div>
             </div>
           </div>
-        )}
-      </div>
-    );
-  }
+        </>
+      )}
+    </div>
+  );
+}
